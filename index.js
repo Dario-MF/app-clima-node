@@ -21,14 +21,20 @@ const main = async () => {
 
         switch (opt) {
             case 1:
-
+                // pedir lugar
                 const nombreLugar = await leerInput('Introduzca ciudad: ');
+                // buscar coincidencias
                 const coincidencias = await busquedas.ciudad(nombreLugar);
+                // pedir opcion elegida
                 const idLugarSelec = await inquirerLugares(coincidencias);
+                if(idLugarSelec === '0') continue;
                 const lugarSelec = coincidencias.find(lugar => lugar.id === idLugarSelec);
+                // guardar en db.
+                busquedas.agregarHistorial(lugarSelec.nombre);
+                // buscar tiempo en lugar seleccionado
                 const tiempo = await busquedas.tiempoPorLugar(lugarSelec.lat, lugarSelec.lon);
 
-
+                // mostrar resultados.
                 console.log('\nInformación del clima'.blue);
                 console.log('Ciudad: '.blue, lugarSelec.nombre);
                 console.log('Lat: '.blue, lugarSelec.lat);
@@ -40,7 +46,9 @@ const main = async () => {
 
                 break;
             case 2:
-                console.log('seleccion 2');
+                busquedas.historial.forEach( lugar => {
+                    console.log(lugar)
+                })
                 break;
 
             default:
