@@ -6,12 +6,20 @@ const { default: axios } = require("axios");
 
 class Busquedas {
     constructor() {
-            //leer db
-            this.leerDB()
-        }
+        //leer db
+        this.leerDB()
+    }
 
     historial = [];
     dbPath = './db/database.json';
+
+    get historialCapitalizado() {
+        const capitalize = this.historial.map(lugar => {
+            const camel = lugar.split(' ').map(word => word[0].toUpperCase() + word.substring(1));
+            return camel.join(' ');
+        })
+        return capitalize;
+    }
 
     get paramsMapbox() {
         return {
@@ -76,36 +84,35 @@ class Busquedas {
         }
     }
 
-    agregarHistorial( lugar = '' ){
+    agregarHistorial(lugar = '') {
         //prevenir duplicados
-        if(this.historial.includes( lugar.toLocaleLowerCase() ) ){
+        if (this.historial.includes(lugar.toLocaleLowerCase())) {
             return;
         };
 
-        this.historial.unshift( lugar.toLocaleLowerCase() );
+        this.historial = this.historial.splice(0, 5);
+
+        this.historial.unshift(lugar.toLocaleLowerCase());
 
         // grabar en db.
         this.guardarDB()
     }
 
-    guardarDB(){
+    guardarDB() {
         const payload = {
             historial: this.historial
         };
 
-        fs.writeFileSync(this.dbPath, JSON.stringify(payload) );
+        fs.writeFileSync(this.dbPath, JSON.stringify(payload));
     }
 
-    leerDB(){
-        if( !fs.existsSync(this.dbPath)){
+    leerDB() {
+        if (!fs.existsSync(this.dbPath)) {
             return;
         };
-        const info =JSON.parse( fs.readFileSync(this.dbPath, 'utf-8'));
+        const info = JSON.parse(fs.readFileSync(this.dbPath, 'utf-8'));
 
-        info.forEach( lugar => {
-            this.historial.unshift( lugar )
-        });
-          
+        this.historial = info.historial;
     }
 };
 

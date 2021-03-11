@@ -27,7 +27,7 @@ const main = async () => {
                 const coincidencias = await busquedas.ciudad(nombreLugar);
                 // pedir opcion elegida
                 const idLugarSelec = await inquirerLugares(coincidencias);
-                if(idLugarSelec === '0') continue;
+                if (idLugarSelec === '0') continue;
                 const lugarSelec = coincidencias.find(lugar => lugar.id === idLugarSelec);
                 // guardar en db.
                 busquedas.agregarHistorial(lugarSelec.nombre);
@@ -46,8 +46,9 @@ const main = async () => {
 
                 break;
             case 2:
-                busquedas.historial.forEach( lugar => {
-                    console.log(lugar)
+                busquedas.historialCapitalizado.forEach((lugar, i) => {
+                    const idx = `${i + 1}.`.blue;
+                    console.log(idx, lugar);
                 })
                 break;
 
